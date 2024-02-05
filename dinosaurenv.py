@@ -1,3 +1,4 @@
+import numpy as np
 import pygame
 import os
 import random
@@ -58,7 +59,45 @@ class model:
         self.dino_rect = self.image.get_rect()
         self.dino_rect.x = self.X_POS
         self.dino_rect.y = self.Y_POS
-    def update(self, userInput):
+
+###################################################################
+###################################################################
+        #action [duck, run, jump, left]
+    def move(self,action):
+        if np.array_equal(action, [0,0,1,0]) and not self.dino_jump:
+            self.dino_duck = False
+            self.dino_run = False
+            self.dino_jump = True
+            self.dino_left=False
+
+        elif np.array_equal(action, [0,0,0,1]) and not self.dino_jump and not self.dino_left:
+            self.dino_duck = False
+            self.dino_run = False
+            self.dino_jump = False
+            self.dino_left=True
+
+        elif np.array_equal(action, [1,0,0,0]) and not self.dino_jump:
+            self.dino_duck = True
+            self.dino_run = False
+            self.dino_jump = False
+            self.dino_left=False
+
+        elif np.array_equal(action, [1,0,0,1]) and not self.dino_jump:
+            self.dino_duck = True
+            self.dino_run = False
+            self.dino_jump = False
+            self.dino_left=True
+
+        elif np.array_equal(action ,[0,1,0,0]):
+            self.dino_duck = False
+            self.dino_run = True
+            self.dino_jump = False
+            self.dino_left=False
+
+
+    def update(self):
+        self.move()
+
         if self.dino_duck:
             self.duck()
         if self.dino_run:
@@ -69,33 +108,9 @@ class model:
             self.left()
 
         if self.step_index >= 10:
-            self.step_index = 0
+            self.step_index = 0 ## for pictures
 
-        if userInput[pygame.K_UP] and not self.dino_jump:
-            self.dino_duck = False
-            self.dino_run = False
-            self.dino_jump = True
-            self.dino_left=False
-        elif userInput[pygame.K_LEFT] and not self.dino_jump and not self.dino_left and not userInput[pygame.K_DOWN]:
-            self.dino_duck = False
-            self.dino_run = False
-            self.dino_jump = False
-            self.dino_left=True
 
-        elif userInput[pygame.K_DOWN] and not self.dino_jump:
-            self.dino_duck = True
-            self.dino_run = False
-            self.dino_jump = False
-            if userInput[pygame.K_LEFT]:
-                 self.dino_left=True
-            else:
-                self.dino_left=False
-
-        elif not (self.dino_jump or userInput[pygame.K_DOWN] or userInput[pygame.K_LEFT]):
-            self.dino_duck = False
-            self.dino_run = True
-            self.dino_jump = False
-            self.dino_left=False
             
 
 
